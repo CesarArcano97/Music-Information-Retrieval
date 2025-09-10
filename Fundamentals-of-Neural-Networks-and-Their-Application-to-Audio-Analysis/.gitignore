@@ -1,0 +1,42 @@
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bbl
+*.blg
+*.idx
+*.ind
+*.ilg
+*.lot
+*.lof
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+
+# LaTeX build directory
+build/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python files (if you add Jupyter notebooks later)
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# VSCode settings (optional, you might want to keep these)
+.vscode/settings.json
+.vscode/launch.json
