@@ -4,16 +4,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%% Enunciado %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{myblock}
-\phantomsection\addcontentsline{toc}{section}{Ejercicio \#1 | Descripción del corpus}
-\section*{Ejercicio \#1 | Descripción del corpus}
+\phantomsection\addcontentsline{toc}{section}{Ejercicio \#3 | Regularización $L^1$}
+\section*{Ejercicio \#3 | Regularización $L^1$}
 
-Analiza el corpus y reporta:\\
+Considera la regularización $L^1$ de una función de costo L, que asumismos es continuamente
+diferenciable: 
+
+\[
+    \tilde{L}(w; X, y) = L(w; X, y) + \alpha \sum_i |w_i|
+\]
 
 \begin{itemize}
-    \item Número de documentos, tokens y vocabulario.
-    \item Hapax legomena y su proporción.
-    \item Porcentaje y su proporción.
-    \item Estadísticas por clase (número de documentos, tokens y vocabulario).
+    \item[(a)] Como en clase, considera una aproximación de segundo orden alrededor
+    de $\textbf{w}^*$ y muestra que la aproximación regularizada de $\tilde{L}$ es:
+
+    \[
+        \hat{L}(\text{w}) = L(\text{w}^*) + \sum_i \bigg(\frac{1}{2} H_{ii} (w_i - w_i^*)^2 + \alpha |w_i|\bigg)
+    \]  
+
+    donde se asume que los datos están decorrelacionados (i.e. ``blanqueados''), tal
+    que \textbf{H} es un matriz diagonal con $H_{ii} > 0$.
 \end{itemize}
 
 \end{myblock}
@@ -21,16 +31,154 @@ Analiza el corpus y reporta:\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsection{Aproximación Cuadrática para Regularización $L^1$}
+
+Sea $L: \mathbb{R}^d \rightarrow \mathbb{R}$ una función dos veces diferenciable y $w^*$ un minimizador
+local de $L$. La expansión de Taylor de segundo orden alrededor de $w^*$ es:
+
+\[
+    L(w) = L(w^*) + \nabla L(w^*)^\top (w - w^*) + \frac{1}{2} (w - w^*)^\top H(w^*)(w - w^*) + O(|| w - w^* ||^2)
+\]
+
+Como $w^*$ es el óptimo, entonces $\nabla L (w^*) = 0$, por lo que podemos despreciar el término que
+lo acompaña y nos quedamos con lo siguiente:
+
+\[
+    L(w) \approx L(w^*) + \frac{1}{2} (w - w^*)^\top H(w^*)(w - w^*)
+\]
+
+Después de lo anterior, la pérdida regularizada con $L^1$ se va a definir como:
+
+\[
+    \hat{L}(w) = L(w) + \alpha ||w||_1 = L(w) + \alpha \sum_{i=1}^d |w_i|
+\]
+
+Por lo tanto, nuestra expresión queda de la siguiente manera:
+
+\[
+    L(w) = L(w^*) + \frac{1}{2} (w - w^*)^\top H(w^*) (w - w^*) + \alpha \sum_{i=1}^{d} |w_i|
+\]
+
+Ahora, como se no sindica que los datos son decorrelacionados, o blanqueados, el Hessiano evaluado
+en $w^*$ es diagonal o aproximadamente diagonal. En ese sentido, podemos argumentar que nuestra curvatura
+queda descrita como $H(w^*) = \text{diag}(H_{11}, H_{22}, ..., H_{dd})$ con $H_{ii} > 0$. Bajo esta 
+suposición, el término cuadrático se simplifica: 
+
+\[
+    (w - w^*)^\top H(w^*) (w - w^*) = \sum_{i=1}^{d} H_{ii} (w_i - w_i^*)^2
+\]
+
+Esto nos permite llegar justo a lo que buscábamos, haciendo el ajuste:
+
+\[
+    L(w) = L(w^*) + \sum_{i=0}^{d} (\frac{1}{2} H_{ii} (w_i - w_i^*)^2 + \alpha |w_i|)
+\]
+
+Una de las conclusiones a las que podemos llegar al estudiar regularización $L^1$ es que el término
+cuadrático $\frac{1}{2} H_{ii} (w - w^*)^2$ penaliza la desviación o alejamiento del punto $w^*$, con una 
+rigidez dada por la curvatura $H_{ii}$ y el término $\alpha |w_i|$ fuerza que los coeficientes se acerquen
+a cero. De igual forma, $(w_i - w_i^*)^2$ es la distancia que hay entre cierto peso y el óptimo $w^*$, al 
+seer un término cuadrado y definido positivo, cualquier incremento es sumamante penalizado. \\
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Teoría}
+\begin{myblock}
 
-\subsection{Resumen de código}
+\begin{itemize}
+    \item[(b)] Muestra que $\hat{L}$ se minimiza en:
+    
+    \[
+        w_i = \text{sign}(w_i^*) \max{ \bigg\{ |w_i^*| - \frac{\alpha}{H_{ii}, 0}\bigg\} }
+    \]
 
-\subsection{Resultados}
+    ¿En qué casos tendremos soluciones \textit{sparse}, i.e. cuando $w_i = 0$?
+\end{itemize}
 
-\subsection{Conclusiones}
+\end{myblock}
+
+
+\subsection{Sparcity provocado por $L^1$}
+
+Ya que tenemos la aproximación dada en el inciso anterior:
+
+\[
+    L(w) = L(w^*) + \sum_{i=0}^{d} (\frac{1}{2} H_{ii} (w_i - w_i^*)^2 + \alpha |w_i|)
+\]
+
+Y tomando en cuenta que consideramos a $H$ diagonal, entonces el problema se puede descomponer. Lo 
+que queremos es minimizar para cada i-ésimo peso:
+
+\[
+    \phi_i (w_i) = \frac{1}{2} H_{ii} (w_i - w_i^*)^2 + \alpha |w_i| \;\;\;\;\; \text{con} H_{ii}>0
+\]  
+
+Esto nos está indicando que la función es estrictamente convexa. Así, recurrimos a condiciones de 
+subgradiente para poder trabajar con $|w_i|$ ya que no es continuamente diferenciable. Tenemos entonces:
+
+\[
+    \begin{cases}
+        \{+1\} & \text{si} \;\;\;\;\; w_i > 0 \\
+        [-1, +1] & \text{si} \;\;\;\;\; w_i = 0 \\
+        \{-1\} & \text{si} \;\;\;\;\; w_i < 0 
+    \end{cases}
+\]
+
+La condición de optimalidad para el mínimo es: $0 \in \partial \phi_i (w_i)$, lo que provoca:
+
+\[
+    0 \in H_{ii}(w_i - w_i^*) + \alpha \partial |w_i|
+\]
+
+Ahora, vamos estudiando por casos. 
+
+\subsubsection*{\textbf{Caso 1:} $w_i > 0$}
+
+Para este caso, sucede lo siguiente:
+
+\[
+    0 = H_{ii}(w_i - w_i^*) + \alpha \;\;\; => \;\;\; w_i = w_i^* - \frac{\alpha}{H_{ii}}
+\]
+
+\subsubsection*{\textbf{Caso 2:} $w_i < 0$}
+
+\[
+    0 = H_{ii}(w_i - w_i^*) - \alpha \;\;\; => \;\;\; w_i = w_i^* + \frac{\alpha}{H_{ii}}
+\]
+
+\subsubsection*{\textbf{Caso 3:} $w_i = 0$}
+
+Para este caso, la condición de optimalidad es $0 \in H_{ii}(0 - w_i^*) + \alpha[-1,+1]$, lo que 
+se tradue en lo siguiente:
+
+\[
+    H_{ii}w_i^* \in \alpha[-1,+1]  \;\;\; => \;\;\; |w_i| \leq \frac{\alpha}{H_{ii}}
+\]
+
+Si se cumple la condición, entonces $w_i = 0$ y eso es el mínimo.
+
+Ahora bien, juntando los casos anteriores, nos queda lo siguiente:
+
+\[%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    w_i = \text{sign}(w_i^*) \max{ \{|w_i^*| - \frac{\alpha}{H_{ii}}, 0\} }
+\]
+
+A esta regla se le conoce como ``Regla de Soft-Thresholding''. Hablando de \textit{sparsity}, habrá
+ceros cuando en la coordenada $i$ se cumpla que:
+
+\[
+    |w_i^*| \leq \frac{\alpha}{H_{ii}}
+\]
+
+Es decir, cuando el umbral $\frac{\alpha}{H_{ii}}$ sea superado o igualado en magnitud del coeficiente
+no regularizado $w_i^*$. Ahora bien, con un $\alpha \uparrow$ se crea un umbral mayor y más coeficientes 
+se anulan. Con una curvatura pequeña, i.e. un $H_{ii}\downarrow$, se amplia el umbral y hay más coeficientes
+anulados. 
+
+
+
 
 \clearpage
 

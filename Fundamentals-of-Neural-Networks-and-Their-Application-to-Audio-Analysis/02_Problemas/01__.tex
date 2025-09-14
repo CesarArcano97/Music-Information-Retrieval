@@ -10,7 +10,7 @@
 Calcula lo siguiente:
 
 \[
-    \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} + 
+    \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} 
     \begin{pmatrix} 0 & 1 \\ 2 & 3 \end{pmatrix} + 
     \begin{pmatrix} 7 & 9 \end{pmatrix}
 \]
@@ -28,11 +28,117 @@ averigua y describe qué es broadcasting, en el contexto de numpy.
 
 \subsection{Teoría}
 
-\subsection{Resumen de código}
+Bajo el contexto de Numpy, Broadcasting es un mecanisco por el cual se permite operar sobre arreglos 
+de tal manera que si el arreglo no cumple con las dimensiones adecuadas para, por ejemplo, una suma 
+de matracies, entonces se replica virtualmente a la forma del arreglo de mayor tamaño. Esto lo realiza
+sin copiar datos, de tal modo que realiza operaciones elemento a elemento de forma vectorizada, como
+es la intención de Numpy. 
 
-\subsection{Resultados}
+Esto lo podemos pensar de una manera matemática. Sea $x$ un arreglo de forma $(a_1, a_2,..., a_m)$ y 
+sea $y$ otro arreglo de la forma $(b_1, b_2,...,b_n)$, podemos alinear "por el final" (i.e. 
+comparamos sus formas de derecha a izquierda. Si una forma tiene menos dimensiones que la otra, se 
+considera que está rellenada a la izquierda con dimensiones de tamaño 1 hasta igualar la longitud 
+de la otra). En cada eje alineado, las dimensiones son compatibles si tenemos los siguientes casos:
 
-\subsection{Conclusiones}
+\[
+    a_i = b_i \;\;\;\;\;\;\; \text{o}  \;\;\;\;\;\;\;  a_i = 1  \;\;\;\;\;\;\;  \text{o} \;\;\;\;\;\;\; b_i = 1
+\]
+
+Si todas las dimensiones resultan compatibles, entonces la forma del resultado es la máxima por eje:
+
+\[
+    (\max(a'_1, b'_1),..., \max(a'_k,b'_k))
+\]
+
+Donde $a'$ y $b'$ son los tuplos alineados. En caso de que algún eje no cumpla con la regla, entonces
+hay un error de broadcasting. 
+
+Este método es realmente útil ya que no crea copias del arreglo de menor dimensión para igualar las
+de los arreglos más grandes, sino que ``simula'' que el arreglo de menor dimensión hace match con las
+dimensiones del más grande. Esto le permite a Numpy ahorrar mucho tiempo de cómputo, sobre todo cuando
+pensamos en operaciones de conjuntos de datos gignates, como lo serían datasets de cientos demiles de
+imágenes, de documentos, o de audio. Podríamos incluso pensar en algo más básico, un vector de 10,000 
+elementos para sumarlo a una matriz de $10000 \times 10000$, con broadcasting no utilizaríamos tanta
+memoria al no duplicar manualmente ese vector las 10,000 veces.
+
+
+\subsection{Ejemplo de Broadcasting}
+
+La tarea nos propone el ejemplo siguiente:
+
+\[
+    \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} 
+    \begin{pmatrix} 0 & 1 \\ 2 & 3 \end{pmatrix} + 
+    \begin{pmatrix} 7 & 9 \end{pmatrix}
+\]
+
+Sea:
+
+\[
+    A = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix} \;\;\;\;\; \& \;\;\;\;\; B = \begin{pmatrix} 0 & 1 \\ 2 & 3 \end{pmatrix} 
+    \;\;\;\;\;\;\; \& \;\;\;\;\;\;\; w = \begin{pmatrix} 7 & 9 \end{pmatrix}
+\]
+
+Tenemos dos matrices $B$ y $B \in \mathbb{R}^{2 \times 2}$, mientras que el vector $w \in \mathbb{R}^2$.
+El producto de $A \cdot B$ nos devuelve lo siguiente:
+
+\[
+    AB = \begin{pmatrix} 1 \cdot 0 + 2 \cdot 2 & 1 \cdot 1 + 2 \cdot 3\\
+                         3 \cdot 0 + 4 \cdot 2 & 3 \cdot 1 + 4 \cdot 3 \end{pmatrix} = \begin{pmatrix}
+                            4 & 7 \\
+                            8 & 15   
+                         \end{pmatrix}
+\]
+
+Ahora, sabemos que $AB$ tiene dimensión $(2,2)$, mientras que $w$ tiene 
+dimensión $(2,)$. Aplicando broadcasting para sumar, $w$ se va a replicar virtualmente por filas para
+tener ahora la dimensión $(2,2)$. De esa forma, pasamos de la ecuación del enunciado a la siguiente:
+
+\[
+  \begin{pmatrix} 4 & 7 \\ 8 & 15 \end{pmatrix} + 
+  \begin{pmatrix} 7 & 9 \\ 7 & 9 \end{pmatrix} =
+  \begin{pmatrix} 11 & 16 \\ 15 & 24 \end{pmatrix}
+\]  
+
+\clearpage
+
+\subsection{Código en Numpy}
+
+\begin{lstlisting}[caption={La descripción del código fue generada con ayuda de GPT}, label={lst:broadcasting}]
+
+import numpy as np
+
+A = np.array([[1, 2],
+              [3, 4]])
+B = np.array([[0, 1],
+              [2, 3]])
+v = np.array([7, 9])        
+
+AB = A @ B                  
+R1 = AB + v                 
+R2 = AB + np.broadcast_to(v, AB.shape)   
+
+print("AB shape:", AB.shape, "\nAB:\n", AB)
+print("v shape:", v.shape)
+print("Result R1:\n", R1)
+print("Result R2:\n", R2)
+
+'''
+This code shows how broadcasting works in NumPy:
+
+1. Compute AB as a 2x2 matrix product.
+2. v has shape (2,), NumPy interprets it as (1,2). 
+   When added to AB (2,2), it is automatically expanded by rows (R1).
+3. np.broadcast_to(v, AB.shape) explicitly forces a (2,2) view.
+4. R1 and R2 are numerically identical, but internally R2 
+   uses a broadcasted read-only view sharing memory with v.
+
+Summary: broadcasting allows arrays with different shapes 
+to be virtually expanded for efficient element-wise operations.
+'''
+\end{lstlisting}
+
+
 
 \clearpage
 

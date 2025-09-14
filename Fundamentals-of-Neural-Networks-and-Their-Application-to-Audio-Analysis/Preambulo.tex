@@ -44,7 +44,41 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand\mom{\sqrt{\frac{m\omega}{2\hbar}}}
 \newcommand\momsq{\frac{m\omega}{2\hbar}}
-\newcommand\dad{\sqrt{\frac{m\omega\hbar}{2}}ie^{-\abs{z}^2/2}}
+\newcommand\dad{\s\begin{lstlisting}
+import numpy as np
+
+A = np.array([[1, 2],
+              [3, 4]])
+B = np.array([[0, 1],
+              [2, 3]])
+v = np.array([7, 9])        
+
+AB = A @ B                  
+R1 = AB + v                 
+R2 = AB + np.broadcast_to(v, AB.shape)   
+
+print("AB shape:", AB.shape, "\nAB:\n", AB)
+print("v shape:", v.shape)
+print("Resultado R1:\n", R1)
+print("Resultado R2:\n", R2)
+
+'''
+En este código se ilustra cómo funciona el broadcasting en NumPy:
+
+1. Se define una matriz A y otra B, y se calcula AB con producto matricial.
+2. El vector v = (7,9) tiene forma (2,), que NumPy interpreta como (1,2). 
+   Al sumarlo con AB (2,2), se expande automáticamente por filas: R1.
+3. Con np.broadcast_to(v, AB.shape) se fuerza explícitamente una vista 
+   de forma (2,2), que se suma a AB para dar R2.
+4. Numéricamente R1 y R2 son iguales, pero internamente R2 utiliza 
+   una vista broadcasted de solo lectura, compartiendo memoria con v.
+
+En resumen, broadcasting permite que arreglos de distintas dimensiones 
+se expandan virtualmente para realizar operaciones vectorizadas sin 
+necesidad de copiar datos.
+'''
+\end{lstlisting}
+qrt{\frac{m\omega\hbar}{2}}ie^{-\abs{z}^2/2}}
 \newcommand\gus{\sqrt{\frac{\hbar}{2m\omega}}}
 \newcommand\gussq{\frac{\hbar}{2m\omega}}
 \newcommand\adag{\hat{a}^{\dagger}}
@@ -125,4 +159,21 @@
     keywordstyle=\color{blue},
     commentstyle=\color{purple},
     showstringspaces=false
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%         Para código Python            %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue},
+  stringstyle=\color{orange},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  columns=fullflexible
 }
