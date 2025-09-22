@@ -1,40 +1,51 @@
-# Assignment 1: Fundamentals of Neural Networks and Music Genre Classification
+# Tarea #1 — Análisis Multimodal para MIR 🎵🤖
 
-## Overview
-This repository contains Assignment 1 for the Selected Topics in Data Science course. The assignment focuses on the fundamental theoretical concepts of neural networks and their practical application to a music genre classification problem using the FMA dataset.
+Este repositorio contiene el desarrollo de la **Tarea 1** de la materia *Temas Selectos de Deep Learning: Análisis Multimodal para MIR*, de la **Maestría en Cómputo Estadístico (CIMAT)**.  
 
-## Contents
-The assignment is divided into two main parts:
+## Contenido
 
-### Theoretical Exercises (PDF):
-- Matrix operations and broadcasting in NumPy.
-- Analysis of network architectures and L1 regularization.
-- Gradient calculation and development of equations for backpropagation.
-- Summary and opinion of the Daphne Oram essay.
+- **`exploratorio-mir-tarea01.ipynb`** → Notebook de análisis exploratorio (EDA).  
+  - Estadísticas básicas de los datos.  
+  - Reducción de dimensionalidad (PCA, etc.).  
+  - Visualización de la variable de respuesta (géneros).  
 
-### Computational Exercise (Jupyter Notebook):
-- Exploratory analysis and dimensionality reduction of audio features.
-- Data preprocessing (standardization, scaling, etc.).
-- Design and training of a neural network in PyTorch to classify music genres.
-- Model evaluation and generation of predictions for the test set.
+- **`MLP-MIR-Smooth.ipynb`** → Notebook principal de modelado.  
+  - Preprocesamiento de datos:
+    - Manejo de nulos.  
+    - Codificación de etiquetas (`LabelEncoder`).  
+    - Estandarización de variables numéricas.  
+    - Embeddings para la variable categórica `artist.name`.  
+  - Arquitectura de red neuronal en **PyTorch** (MLP con embeddings).  
+  - Regularización (Dropout, L1, L2).  
+  - Funciones de pérdida:
+    - Cross-Entropy con pesos de clase.  
+    - Cross-Entropy con *label smoothing*.  
+    - Focal Loss (opcional).  
+  - Entrenamiento y validación (con scheduler y métricas).  
+  - Visualización de resultados:
+    - Curvas de pérdida y F1.  
+    - Matriz de confusión.  
+    - Curvas ROC multiclase.  
 
-## Getting Started
-To run the computational part of the assignment:
+- **`main.pdf`** → Documento de entrega de la tarea.  
+  Incluye los ejercicios teóricos y prácticos:  
+  1. Broadcasting en NumPy.  
+  2. Redes neuronales multicapa (comparación de arquitecturas).  
+  3. Regularización \(L_1\).  
+  4. Backpropagation paso a paso.  
+  5. Clasificador de géneros musicales (proyecto práctico con FMA).  
 
-1. Ensure you have all the .csv files from the dataset in the same directory as the notebook or in an accessible path.
-2. Open the Assignment1_Name_LastName.ipynb file in a Jupyter or Google Colab environment.
-3. Install the dependencies listed in the Requirements section.
-4. Run the cells in order to reproduce the analysis and results.
+## Corpus
 
-## Requirements
-- Python 3.x
-- NumPy
-- Pandas (for handling the .csv files)
-- Scikit-learn (for preprocessing and dimensionality reduction)
-- PyTorch (for the neural network implementation)
-- Matplotlib / Seaborn (for data visualization)
+Se utiliza un subconjunto del **Free Music Archive (FMA)**, que contiene:  
+- Conjunto de **entrenamiento (~15k registros)**.  
+- Conjunto de **validación**.  
+- Conjunto de **prueba** (sin etiquetas de género).  
+- Aproximadamente **500 características numéricas** (MFCC, Chroma, Tonnetz, Spectral, etc.) más metadatos (`artist.name`, `track.genre1`).  
 
-## Author
-César Aguirre
+Referencia: [FMA: A Dataset For Music Analysis](https://github.com/mdeff/fma).
 
-Created for the Selected Topics in Data Science: Music Information Retrieval course at CIMAT Monterrey
+## Autor
+
+- César M. Aguirre Calzadilla
+- Maestría en Cómputo Estadístico — CIMAT
