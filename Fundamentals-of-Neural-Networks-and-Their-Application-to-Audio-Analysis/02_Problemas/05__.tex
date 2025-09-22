@@ -4,16 +4,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%% Enunciado %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{myblock}
-\phantomsection\addcontentsline{toc}{section}{Ejercicio \#1 | Descripción del corpus}
-\section*{Ejercicio \#1 | Descripción del corpus}
+\phantomsection\addcontentsline{toc}{section}{Ejercicio \#5 | Clasificador de Géneros Musicales}
+\section*{Ejercicio \#5 | Clasificador de Géneros Musicales}
 
-Analiza el corpus y reporta:\\
+En el moodle del curso, encontrarás un conjunto de datos que corresponden a un extracto del Free Music Archive (FMA) [1], que es una base de datos muy extensa de archivos de audio usada para diversas tareas de MIR.\footnote{El Free Music Archive es un repositorio interactivo de música legal y de alta calidad.}
+
+Encontrarás varios conjuntos de datos en formato \texttt{.csv} que corresponden a dos grupos: uno de entrenamiento (archivos que empiezan con el prefijo \texttt{tracks\_fma\_train}) y uno de prueba (archivos que empiezan con el prefijo \texttt{tracks\_fma\_test}). Para cada uno hay un archivo con metadatos (\texttt{\dots\_metadata.csv}) que incluye la variable de respuesta \texttt{track.genre12} excepto para los datos de test.
+
+También, se proporcionan diversos archivos que contienen características de audio y de la señal (\texttt{\dots\_features.csv}) en forma de indicadores o estadísticas de la señal, por lo que las escalas pueden variar.\footnote{Las características se extraen utilizando herramientas estándar de análisis de audio.}
 
 \begin{itemize}
-    \item Número de documentos, tokens y vocabulario.
-    \item Hapax legomena y su proporción.
-    \item Porcentaje y su proporción.
-    \item Estadísticas por clase (número de documentos, tokens y vocabulario).
+    \item Usando los datos de \textit{train}, realiza un análisis exploratorio de los datos, usando métodos de reducción de dimensión que consideres apropiados. ¿Qué características tiene la variable de respuesta? ¿Puedes identificar los géneros, o al menos, algún subconjunto de ellos? Utiliza las características de audio y de la señal que creas convenientes y repórtalo junto con todos tus hallazgos.
+
+    \item Usando también los datos de entrenamiento, ajusta una red neuronal con \texttt{pytorch} para predecir el género. Genera un conjunto de datos de entrenamiento y validación para verificar su ajuste. Define la arquitectura de la red, y reporta todos los detalles del modelo y el preprocesamiento de los datos que hayas usado (características de audio y señal usadas, reducción de dimensión, regularización, optimizador, estandarización, escalamiento, etcétera). Reporta las métricas de desempeño y gráficas que creas conveniente.
+
+    \item Usando la red neuronal ajustada en el paso previo, predice el género de los datos de \textit{test}.
 \end{itemize}
 
 \end{myblock}
@@ -24,12 +29,11 @@ Analiza el corpus y reporta:\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Teoría}
+Los resultados de este problema se encuentran en los notebooks:
 
-\subsection{Resumen de código}
-
-\subsection{Resultados}
-
-\subsection{Conclusiones}
+\begin{itemize}
+    \item \textbf{MLP-MIR-Smooth.ipynb}
+    \item \textbf{exploratorio-mir-tarea01.ipynb}
+\end{itemize}
 
 \clearpage
