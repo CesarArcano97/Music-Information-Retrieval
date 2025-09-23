@@ -1,0 +1,12 @@
+[
+    {
+        "key": "ctrl+alt+b",
+        "command": "latex-workshop.build",
+        "when": "editorTextFocus && editorLangId == latex"
+    },
+    {
+        "key": "ctrl+alt+v",
+        "command": "latex-workshop.view",
+        "when": "editorTextFocus && editorLangId == latex"
+    }
+]
